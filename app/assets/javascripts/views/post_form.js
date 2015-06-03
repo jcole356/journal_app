@@ -13,9 +13,21 @@ Journal.Views.PostForm = Backbone.View.extend({
 
   handleSubmit: function (event) {
     event.preventDefault();
-    console.log(event.currentTarget);
     var params = $(event.currentTarget).serializeJSON();
-    console.log(params);
+    this.model.set(params["post"]);
+    this.model.save({}, {
+      success: function () {
+        Backbone.history.navigate("posts/" + this.model.id, {trigger: true});
+        this.collection.add(this.model);
+      }.bind(this),
+      error: function (model, response) {
+        var $errors = this.$el.find('div.errors');
+        $errors.empty();
+        response.responseJSON.forEach (function(error) {
+          $errors.append($('<li>').text(error));
+        });
+      }.bind(this)
+    });
   },
 
   render: function () {
