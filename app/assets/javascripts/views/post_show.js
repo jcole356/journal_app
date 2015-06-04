@@ -6,10 +6,38 @@ Journal.Views.PostShow = Backbone.View.extend({
   },
 
   events: {
-    "click button.delete": "removePost"
+    "click button.delete": "removePost",
+    "dblclick span.inline-edit": "inlineEdit",
+    "blur form.inline-edit": "updateInlineEdit"
   },
 
   model: Journal.Models.Post,
+
+  inlineEdit: function (event) {
+    var $target, klass;
+    if ($(event.currentTarget).attr('class') === 'inline-edit title') {
+      $target = this.$el.find('.title');
+      klass = 'title';
+    } else if ($(event.currentTarget).attr('class') === 'inline-edit body') {
+      $target = this.$el.find('.body');
+      klass = 'body';
+    }
+    var oldText = $target.text();
+    var html = "<form class='inline-edit'><input type='text'" +
+                " name='post[" + klass + "]'" +
+                "value='" + oldText + "'></form>"
+    $target.html(html);
+  },
+
+  updateInlineEdit: function (event) {
+    event.preventDefault();
+    var params = $(event.currentTarget).serializeJSON();
+    this.model.save(params['post'], {
+      error: function (model) {
+        model.fetch();
+      }
+    });
+  },
 
   removePost: function () {
     this.model.destroy();
