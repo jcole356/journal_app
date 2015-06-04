@@ -5,7 +5,7 @@ Journal.Routers.PostsRouter = Backbone.Router.extend({
   },
 
   routes: {
-    '': 'PostsIndex',
+    '': 'root',
     'posts/new': 'NewPost',
     'posts/:id': 'PostShow',
     'posts/:id/edit': 'EditPost'
@@ -41,6 +41,13 @@ Journal.Routers.PostsRouter = Backbone.Router.extend({
       model: this._postCollection().getOrFetch(id)
     });
     this._swapView(showView);
+  },
+
+  root: function () {
+    if (this._currentView) {
+      this._currentView.remove();
+    }
+    this._currentView = null;
   },
 
   _postCollection: function() {
