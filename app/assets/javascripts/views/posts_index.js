@@ -3,7 +3,7 @@ Journal.Views.PostsIndex = Backbone.View.extend({
 
   initialize: function () {
     this.collection.fetch({ reset: true });
-    this.listenTo(this.collection, 'remove reset add', this.render);
+    this.listenTo(this.collection, 'remove reset add change', this.render);
   },
 
   render: function () {

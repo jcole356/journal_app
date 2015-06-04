@@ -1,6 +1,7 @@
 Journal.Routers.PostsRouter = Backbone.Router.extend({
   initialize: function ($el) {
     this.$el = $el;
+    this.PostsIndex();
   },
 
   routes: {
@@ -12,7 +13,8 @@ Journal.Routers.PostsRouter = Backbone.Router.extend({
 
   EditPost: function (id) {
     var postForm = new Journal.Views.PostForm({
-      model: this._postCollection().getOrFetch(id)
+      model: this._postCollection().getOrFetch(id),
+      collection: this._postCollection()
     });
     this._swapView(postForm);
   },
@@ -28,10 +30,10 @@ Journal.Routers.PostsRouter = Backbone.Router.extend({
 
   PostsIndex: function () {
     var indexView = new Journal.Views.PostsIndex({
-      collection: new Journal.Collections.Posts()
+      collection: this._postCollection()
     });
     indexView.collection.fetch();
-    this._swapView(indexView);
+    $('.sidebar').html(indexView.render().$el);
   },
 
   PostShow: function (id) {
